@@ -56,6 +56,7 @@ func NewTrie(key string) *Trie {
 }
 
 func (trie *Trie) Get(key string) int {
+	log.Info("Get ", key)
 	iterator := NewDotSegmentRevertIterator(key)
 
 	node := trie
@@ -82,6 +83,7 @@ func (trie *Trie) Get(key string) int {
 }
 
 func (trie *Trie) Put(key string, value int) {
+	log.Info("Put ", key, value)
 	iterator := NewDotSegmentRevertIterator(key)
 
 	node := trie
