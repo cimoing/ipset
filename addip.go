@@ -14,6 +14,10 @@ func addIP(ip net.IP, list string) error {
 	return nil
 }
 
+func flushSet(list string) error {
+	return nil
+}
+
 func shutdownLib() error {
 	log.Debug("shutdown ipset lib")
 	return nil
