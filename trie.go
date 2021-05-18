@@ -4,19 +4,6 @@ import "strings"
 
 type StringSegment func(key string, start int) (segment string, nextIndex int)
 
-// DotSegment trie path segment
-func DotSegment(path string, end int) (segment string, next int) {
-	if len(path) == 0 || end <= 0 {
-		return "", -1
-	}
-	start := strings.IndexRune(path[end+1:], '.') // next '/' after 0th rune
-
-	if start == -1 {
-		return path[end:], -1
-	}
-	return path[end-start-1 : end], end - start - 1
-}
-
 type DotSegmentIterator struct {
 	current int
 	value   string
@@ -24,7 +11,7 @@ type DotSegmentIterator struct {
 }
 
 func NewDotSegmentRevertIterator(value string) *DotSegmentIterator {
-	return &DotSegmentIterator{value: value, revert: true, current: len(value) - 1}
+	return &DotSegmentIterator{value: value, revert: true, current: len(value)}
 }
 
 func (iterator *DotSegmentIterator) Next() int {
@@ -59,13 +46,13 @@ func (iterator *DotSegmentIterator) NextIdx() int {
 }
 
 type Trie struct {
-	segment  StringSegment
+	key      string
 	value    int
 	children map[string]*Trie
 }
 
-func NewTrie() *Trie {
-	return &Trie{value: -1, children: make(map[string]*Trie)}
+func NewTrie(key string) *Trie {
+	return &Trie{key: key, value: -1, children: make(map[string]*Trie)}
 }
 
 func (trie *Trie) Get(key string) int {
@@ -76,6 +63,7 @@ func (trie *Trie) Get(key string) int {
 	next := -1
 
 	for {
+		current = iterator.current
 		next = iterator.Next()
 
 		// get to end
@@ -101,6 +89,7 @@ func (trie *Trie) Put(key string, value int) {
 	next := -1
 
 	for {
+		current = iterator.current
 		next = iterator.Next()
 
 		// get to end
@@ -112,7 +101,9 @@ func (trie *Trie) Put(key string, value int) {
 		if nextNode, ok := node.children[iterator.value[next:current]]; ok {
 			node = nextNode
 		} else {
-			node.children[iterator.value[next:current]] = NewTrie()
+			tmp := NewTrie(iterator.value[next:current])
+			node.children[iterator.value[next:current]] = tmp
+			node = tmp
 		}
 	}
 }

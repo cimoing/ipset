@@ -17,7 +17,7 @@ type IPSet struct {
 
 // New create new ipset
 func New() *IPSet {
-	f := &IPSet{domains: NewTrie()}
+	f := &IPSet{domains: NewTrie("")}
 
 	return f
 }
