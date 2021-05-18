@@ -3,9 +3,7 @@ package ipset
 import (
 	"context"
 	"github.com/coredns/coredns/plugin"
-	"github.com/dghubble/trie"
 	"github.com/miekg/dns"
-	"strings"
 )
 
 // IPSet implements the plugin interface.
@@ -14,25 +12,12 @@ type IPSet struct {
 	listName []string
 
 	// 匹配的记录
-	domains *trie.PathTrie
-}
-
-// DotSegment trie path segment
-func DotSegment(path string, start int) (segment string, next int) {
-	if len(path) == 0 || start < 0 || start > len(path)-1 {
-		return "", -1
-	}
-	end := strings.IndexRune(path[start+1:], '.') // next '/' after 0th rune
-	if end == -1 {
-		return path[start:], -1
-	}
-	return path[start : start+end+1], start + end + 1
+	domains *Trie
 }
 
 // New create new ipset
 func New() *IPSet {
-	c := &trie.PathTrieConfig{Segmenter: DotSegment}
-	f := &IPSet{domains: trie.NewPathTrieWithConfig(c)}
+	f := &IPSet{domains: NewTrie()}
 
 	return f
 }
