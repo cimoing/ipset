@@ -68,11 +68,11 @@ func (trie *Trie) Get(key string) int {
 		next = iterator.Next()
 
 		// get to end
-		if next == -1 {
+		if next == -1 && current <= 0 {
 			break
 		}
 
-		if nextNode, ok := node.children[iterator.value[next:current]]; ok {
+		if nextNode, ok := node.children[iterator.value[next+1:current]]; ok {
 			node = nextNode
 		} else {
 			break
@@ -83,7 +83,7 @@ func (trie *Trie) Get(key string) int {
 }
 
 func (trie *Trie) Put(key string, value int) {
-	log.Info("Put ", key, value)
+	log.Info("Put key:", key, " value: ", value)
 	iterator := NewDotSegmentRevertIterator(key)
 
 	node := trie
@@ -100,11 +100,11 @@ func (trie *Trie) Put(key string, value int) {
 			break
 		}
 
-		if nextNode, ok := node.children[iterator.value[next:current]]; ok {
+		if nextNode, ok := node.children[iterator.value[next+1:current]]; ok {
 			node = nextNode
 		} else {
-			tmp := NewTrie(iterator.value[next:current])
-			node.children[iterator.value[next:current]] = tmp
+			tmp := NewTrie(iterator.value[next+1 : current])
+			node.children[iterator.value[next+1:current]] = tmp
 			node = tmp
 		}
 	}
