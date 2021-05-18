@@ -31,10 +31,12 @@ func NewResponseReverter(w dns.ResponseWriter, r *dns.Msg, ipset *IPSet) *Respon
 // WriteMsg records the status code and calls the underlying ResponseWriter's WriteMsg method.
 func (r *ResponseReverter) WriteMsg(res *dns.Msg) error {
 	res.Question[0] = r.originalQuestion
+	log.Info("Start Match ", r.originalQuestion.Name)
 	if r.ipset.domains.Get(r.originalQuestion.Name) != 1 {
 		log.Info("Match Failed", r.originalQuestion.Name)
 		return r.ResponseWriter.WriteMsg(res)
 	}
+	log.Info("Matched ", r.originalQuestion.Name)
 	for _, rr := range res.Answer {
 		if rr.Header().Rrtype != dns.TypeA && rr.Header().Rrtype != dns.TypeAAAA {
 			continue
