@@ -32,6 +32,7 @@ func NewResponseReverter(w dns.ResponseWriter, r *dns.Msg, ipset *IPSet) *Respon
 func (r *ResponseReverter) WriteMsg(res *dns.Msg) error {
 	res.Question[0] = r.originalQuestion
 	if r.ipset.domains.Get(r.originalQuestion.Name) != 1 {
+		log.Info("Match Failed", r.originalQuestion.Name)
 		return r.ResponseWriter.WriteMsg(res)
 	}
 	for _, rr := range res.Answer {
