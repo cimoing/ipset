@@ -1,4 +1,4 @@
-module github.com/missdeer/ipset
+module github.com/cimoing/ipset
 
 go 1.13
 
